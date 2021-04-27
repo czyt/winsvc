@@ -21,8 +21,9 @@ import (
 var (
 	appPath string
 
-	flagServiceName = flag.String("service-name", "hello-winsvc", "Set service name")
-	flagServiceDesc = flag.String("service-desc", "hello windows service", "Set service description")
+	flagServiceName        = flag.String("service-name", "hello-winsvc", "Set service name")
+	flagServiceDisplayName = flag.String("service-displayName", "hello windows service", "Set service display name")
+	flagServiceDesc        = flag.String("service-desc", "hello windows service is a test", "Set service description")
 
 	flagServiceInstall   = flag.Bool("service-install", false, "Install service")
 	flagServiceUninstall = flag.Bool("service-remove", false, "Remove service")
@@ -77,7 +78,7 @@ func main() {
 
 	// install service
 	if *flagServiceInstall {
-		if err := winsvc.InstallService(appPath, *flagServiceName, *flagServiceDesc); err != nil {
+		if err := winsvc.InstallService(appPath, *flagServiceName, *flagServiceDisplayName, *flagServiceDesc); err != nil {
 			log.Fatalf("installService(%s, %s): %v\n", *flagServiceName, *flagServiceDesc, err)
 		}
 		fmt.Printf("Done\n")
@@ -112,7 +113,7 @@ func main() {
 	}
 
 	// run as service
-	if !winsvc.IsAnInteractiveSession() {
+	if winsvc.InServiceMode() {
 		log.Println("main:", "runService")
 		if err := winsvc.RunAsService(*flagServiceName, StartServer, StopServer, false); err != nil {
 			log.Fatalf("svc.Run: %v\n", err)
