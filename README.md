@@ -1,15 +1,11 @@
-- *Go语言QQ群: 102319854, 1055927514*
-- *凹语言(凹读音“Wa”)(The Wa Programming Language): https://github.com/wa-lang/wa*
-
-----
 
 # Windows service
 
-[![GoDoc](https://godoc.org/github.com/chai2010/winsvc?status.svg)](https://godoc.org/github.com/chai2010/winsvc)
+[![GoDoc](https://godoc.org/github.com/czyt/winsvc?status.svg)](https://godoc.org/github.com/czyt/winsvc)
 
 ## Install
 
-`go get github.com/chai2010/winsvc`
+`go get github.com/czyt/winsvc`
 
 ## Example
 
@@ -25,7 +21,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/chai2010/winsvc"
+	"github.com/czyt/winsvc"
 )
 
 var (
@@ -87,7 +83,7 @@ func main() {
 
 	// install service
 	if *flagServiceInstall {
-		if err := winsvc.InstallService(appPath, *flagServiceName, *flagServiceDesc); err != nil {
+		if err := winsvc.InstallService(appPath, *flagServiceName,"", *flagServiceDesc); err != nil {
 			log.Fatalf("installService(%s, %s): %v\n", *flagServiceName, *flagServiceDesc, err)
 		}
 		fmt.Printf("Done\n")
@@ -150,6 +146,6 @@ func StopServer() {
 BUGS
 ====
 
-Report bugs to <chaishushan@gmail.com>.
+Report bugs to <czytcn@gmail.com>.
 
 Thanks!

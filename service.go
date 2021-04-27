@@ -192,7 +192,7 @@ func GetAppPath() (string, error) {
 }
 
 func InServiceMode() bool {
-	isIntSess, err := svc.IsAnInteractiveSession()
+	isIntSess, err := svc.IsWindowsService()
 	if err != nil {
 		log.Fatalf("winsvc.InServiceMode: svc.IsAnInteractiveSession(): err = %v", err)
 	}
@@ -200,14 +200,14 @@ func InServiceMode() bool {
 }
 
 func IsAnInteractiveSession() bool {
-	isIntSess, err := svc.IsAnInteractiveSession()
+	isIntSess, err := svc.IsWindowsService()
 	if err != nil {
 		log.Fatalf("winsvc.InServiceMode: svc.IsAnInteractiveSession(): err = %v", err)
 	}
-	return isIntSess
+	return !isIntSess
 }
 
-func InstallService(appPath, name, desc string, params ...string) error {
+func InstallService(appPath, name,displayName, desc string, params ...string) error {
 	m, err := mgr.Connect()
 	if err != nil {
 		return err
@@ -220,7 +220,8 @@ func InstallService(appPath, name, desc string, params ...string) error {
 	}
 	s, err = m.CreateService(name, appPath,
 		mgr.Config{
-			DisplayName: desc,
+			DisplayName: displayName,
+			Description: desc,
 			StartType:   windows.SERVICE_AUTO_START,
 		},
 		params...,
@@ -267,12 +268,12 @@ func StartService(name string) error {
 	defer m.Disconnect()
 	s, err := m.OpenService(name)
 	if err != nil {
-		return fmt.Errorf("winsvc.StartService: could not access service: %v", err)
+		return fmt.Errorf("could not access service: %v", err)
 	}
 	defer s.Close()
-	err = s.Start("p1", "p2", "p3")
+	err = s.Start("is", "manual-started")
 	if err != nil {
-		return fmt.Errorf("winsvc.StartService: could not start service: %v", err)
+		return fmt.Errorf("could not start service: %v", err)
 	}
 	return nil
 }
@@ -328,22 +329,22 @@ func controlService(name string, c svc.Cmd, to svc.State) error {
 	defer m.Disconnect()
 	s, err := m.OpenService(name)
 	if err != nil {
-		return fmt.Errorf("winsvc.controlService: could not access service: %v", err)
+		return fmt.Errorf("could not access service: %v", err)
 	}
 	defer s.Close()
 	status, err := s.Control(c)
 	if err != nil {
-		return fmt.Errorf("winsvc.controlService: could not send control=%d: %v", c, err)
+		return fmt.Errorf("could not send control=%d: %v", c, err)
 	}
 	timeout := time.Now().Add(10 * time.Second)
 	for status.State != to {
 		if timeout.Before(time.Now()) {
-			return fmt.Errorf("winsvc.controlService: timeout waiting for service to go to state=%d", to)
+			return fmt.Errorf("timeout waiting for service to go to state=%d", to)
 		}
 		time.Sleep(300 * time.Millisecond)
 		status, err = s.Query()
 		if err != nil {
-			return fmt.Errorf("winsvc.controlService: could not retrieve service status: %v", err)
+			return fmt.Errorf("could not retrieve service status: %v", err)
 		}
 	}
 	return nil

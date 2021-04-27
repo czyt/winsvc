@@ -15,7 +15,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/chai2010/winsvc"
+	"github.com/czyt/winsvc"
 )
 
 var (
