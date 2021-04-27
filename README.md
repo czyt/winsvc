@@ -146,6 +146,9 @@ func StopServer() {
 BUGS
 ====
 
+## Note
+the repo was forked from  [chai2010](github.com/chai2010/winsvc)
+
 Report bugs to <czytcn@gmail.com>.
 
 Thanks!
