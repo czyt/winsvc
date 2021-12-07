@@ -118,7 +118,7 @@ func main() {
 	}
 
 	// run as service
-	if !winsvc.InServiceMode() {
+	if winsvc.InServiceMode() {
 		log.Println("main:", "runService")
 		if err := winsvc.RunAsService(*flagServiceName, StartServer, StopServer, false); err != nil {
 			log.Fatalf("svc.Run: %v\n", err)
