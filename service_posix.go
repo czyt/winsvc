@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build !windows
 // +build !windows
 
 package winsvc
@@ -45,6 +46,9 @@ func IsAnInteractiveSession() bool {
 	panic("winsvc: only support windows!")
 }
 func InstallService(appPath, name, desc string, params ...string) error {
+	panic("winsvc: only support windows!")
+}
+func InstallServiceWithOption(appPath, name string, params ServiceParamsOption, option ...ServiceOption) error {
 	panic("winsvc: only support windows!")
 }
 func RemoveService(name string) error {
