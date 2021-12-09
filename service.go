@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 /*
@@ -207,7 +208,7 @@ func IsAnInteractiveSession() bool {
 	return !isIntSess
 }
 
-func InstallService(appPath, name,displayName, desc string, params ...string) error {
+func InstallService(appPath, name, displayName, desc string, params ...string) error {
 	m, err := mgr.Connect()
 	if err != nil {
 		return err
@@ -225,6 +226,36 @@ func InstallService(appPath, name,displayName, desc string, params ...string) er
 			StartType:   windows.SERVICE_AUTO_START,
 		},
 		params...,
+	)
+	if err != nil {
+		return err
+	}
+	defer s.Close()
+	err = eventlog.InstallAsEventCreate(name, eventlog.Error|eventlog.Warning|eventlog.Info)
+	if err != nil {
+		s.Delete()
+		return fmt.Errorf("winsvc.InstallService: InstallAsEventCreate failed, err = %v", err)
+	}
+	return nil
+}
+func InstallServiceWithOption(appPath, name string, params ServiceParamsOption, option ...ServiceOption) error {
+	m, err := mgr.Connect()
+	if err != nil {
+		return err
+	}
+	defer m.Disconnect()
+	s, err := m.OpenService(name)
+	if err == nil {
+		s.Close()
+		return fmt.Errorf("winsvc.InstallService: service %s already exists", name)
+	}
+	svcConfig := new(mgr.Config)
+	for _, fn := range option {
+		fn(svcConfig)
+	}
+	s, err = m.CreateService(name, appPath,
+		*svcConfig,
+		params()...,
 	)
 	if err != nil {
 		return err
