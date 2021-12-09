@@ -195,7 +195,7 @@ func GetAppPath() (string, error) {
 func InServiceMode() bool {
 	isIntSess, err := svc.IsWindowsService()
 	if err != nil {
-		log.Fatalf("winsvc.InServiceMode: svc.IsAnInteractiveSession(): err = %v", err)
+		log.Fatalf("winsvc.InServiceMode: svc.IsWindowsService(): err = %v", err)
 	}
 	return isIntSess
 }
@@ -203,7 +203,7 @@ func InServiceMode() bool {
 func IsAnInteractiveSession() bool {
 	isIntSess, err := svc.IsWindowsService()
 	if err != nil {
-		log.Fatalf("winsvc.InServiceMode: svc.IsAnInteractiveSession(): err = %v", err)
+		log.Fatalf("winsvc.InServiceMode: svc.IsWindowsService(): err = %v", err)
 	}
 	return !isIntSess
 }
