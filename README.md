@@ -5,7 +5,7 @@
 
 ## Install
 
-`go get github.com/czyt/winsvc`
+`go get github.com/tiny-lib/winsvc`
 
 ## Example
 
@@ -21,7 +21,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/czyt/winsvc"
+	"github.com/tinylib/winsvc"
 )
 
 var (
