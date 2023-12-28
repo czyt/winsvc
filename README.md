@@ -21,7 +21,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/tinylib/winsvc"
+	"github.com/tiny-lib/winsvc"
 )
 
 var (
